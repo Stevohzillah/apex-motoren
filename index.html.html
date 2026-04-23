@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Motoren Kenya – Premium Spare Parts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#B8952A;--gold-light:#D4AF50;
+  --dark:#0A0A0A;--dark2:#111111;--dark3:#1A1A1A;--dark4:#242424;
+  --mid:#3A3A3A;--muted:#888888;--light:#CCCCCC;--white:#F9F7F2;
+  --font-display:'Cormorant Garamond',serif;
+  --font-body:'Barlow',sans-serif;
+  --font-label:'Barlow Condensed',sans-serif;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--dark);color:var(--white);font-family:var(--font-body);font-weight:300;line-height:1.7}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(184,149,42,0.2)}
+.nav-logo{font-family:var(--font-label);font-size:1.4rem;font-weight:700;letter-spacing:0.25em;color:var(--gold);text-decoration:none;cursor:pointer}
+.nav-logo span{color:var(--white);font-weight:400}
+.nav-links{display:flex;gap:0.25rem;list-style:none}
+.nav-links li button{font-family:var(--font-label);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;padding:0.4rem 0.8rem;transition:color 0.2s;position:relative}
+.nav-links li button::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:1px;background:var(--gold);transition:all 0.3s}
+.nav-links li button.active{color:var(--gold)}
+.nav-links li button.active::after{left:0.8rem;right:0.8rem}
+.nav-links li button:hover{color:var(--light)}
+.nav-cta{display:flex;align-items:center;gap:1rem}
+.btn-whatsapp{display:flex;align-items:center;gap:0.5rem;padding:0.55rem 1.2rem;background:#25D366;color:#000;font-family:var(--font-label);font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:opacity 0.2s}
+.btn-whatsapp:hover{opacity:0.85}
+.btn-outline{padding:0.55rem 1.2rem;background:transparent;color:var(--gold);font-family:var(--font-label);font-size:0.78rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:1px solid var(--gold);cursor:pointer;text-decoration:none;transition:all 0.2s}
+.btn-outline:hover{background:var(--gold);color:var(--dark)}
+.btn-primary{padding:0.9rem 2rem;background:var(--gold);color:var(--dark);font-family:var(--font-label);font-size:0.82rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block}
+.btn-primary:hover{background:var(--gold-light)}
+
+/* PAGE SYSTEM */
+.pages-wrapper{position:fixed;top:0;left:0;right:0;bottom:0;overflow:hidden}
+.page{position:absolute;inset:0;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 0.4s ease,transform 0.4s ease;transform:translateX(40px);padding-top:72px}
+.page.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.page.exit-left{transform:translateX(-40px);opacity:0}
+
+.page-indicator{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;gap:0.5rem;z-index:50}
+.page-dot{width:6px;height:6px;border-radius:50%;background:rgba(184,149,42,0.3);cursor:pointer;transition:all 0.3s;border:none;padding:0}
+.page-dot.active{background:var(--gold);width:24px;border-radius:3px}
+
+.page-arrow{position:fixed;top:50%;z-index:50;background:rgba(10,10,10,0.7);border:1px solid rgba(184,149,42,0.3);color:var(--gold);font-size:1.2rem;padding:0.7rem 0.9rem;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(8px);transform:translateY(-50%)}
+.page-arrow:hover{background:rgba(184,149,42,0.15);border-color:var(--gold)}
+.page-arrow.prev{left:1.5rem}
+.page-arrow.next{right:1.5rem}
+.page-arrow.hidden{opacity:0;pointer-events:none}
+
+/* SHARED */
+.section-eyebrow{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:1rem}
+.section-eyebrow::before,.section-eyebrow::after{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.section-title{font-family:var(--font-display);font-size:clamp(2rem,3.5vw,3.5rem);font-weight:300;color:var(--white);text-align:center}
+.section-title em{font-style:italic;color:var(--gold)}
+label{font-family:var(--font-label);font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{background:var(--dark4);border:1px solid rgba(255,255,255,0.1);color:var(--white);font-family:var(--font-body);font-size:0.9rem;font-weight:300;padding:0.75rem 0.9rem;outline:none;transition:border-color 0.2s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:rgba(184,149,42,0.6)}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.2)}
+select option{background:var(--dark3)}
+textarea{resize:vertical;min-height:90px}
+.form-group{display:flex;flex-direction:column;gap:0.4rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem}
+.form-group.full{grid-column:1/-1}
+
+/* PAGE 1 HERO */
+.hero{min-height:calc(100vh - 72px);display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:4rem 4rem 4rem 5rem;position:relative;z-index:2}
+.hero-eyebrow{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.hero-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.hero-title{font-family:var(--font-display);font-size:clamp(3rem,5vw,5.5rem);font-weight:300;line-height:1.05;color:var(--white);margin-bottom:1.5rem}
+.hero-title em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:1rem;font-weight:300;color:var(--muted);max-width:420px;margin-bottom:2.5rem;line-height:1.8}
+.hero-actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.hero-badges{margin-top:3rem;display:flex;gap:2rem}
+.hero-badge .num{font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--gold);display:block;line-height:1}
+.hero-badge .lbl{font-family:var(--font-label);font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem}
+.hero-right{position:relative;overflow:hidden}
+.hero-right-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,149,42,0.08) 0%,transparent 50%),repeating-linear-gradient(-45deg,transparent,transparent 60px,rgba(184,149,42,0.03) 60px,rgba(184,149,42,0.03) 61px)}
+.hero-car-visual{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.hero-car-svg{width:90%;opacity:0.85}
+.hero-divider{position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(184,149,42,0.4),transparent)}
+.brands{background:var(--dark2);padding:2rem 5rem;border-top:1px solid rgba(184,149,42,0.15);border-bottom:1px solid rgba(184,149,42,0.15)}
+.brands-inner{display:flex;align-items:center;gap:3rem;overflow-x:auto}
+.brands-label{font-family:var(--font-label);font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.brand-item{font-family:var(--font-label);font-size:1rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:rgba(204,204,204,0.35);white-space:nowrap;flex-shrink:0;transition:color 0.2s;cursor:default}
+.brand-item:hover{color:var(--gold)}
+
+/* PAGE 2 PROCESS */
+.process-page{min-height:calc(100vh - 72px);display:flex;flex-direction:column;justify-content:center;padding:4rem 5rem}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.steps::before{content:'';position:absolute;top:2.2rem;left:12.5%;right:12.5%;height:1px;background:linear-gradient(to right,transparent,rgba(184,149,42,0.4),transparent)}
+.step{padding:0 2rem;text-align:center}
+.step-num{width:4.5rem;height:4.5rem;border:1px solid rgba(184,149,42,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.8rem;font-weight:600;color:var(--gold);margin:0 auto 1.5rem;background:var(--dark);position:relative;z-index:1}
+.step-title{font-family:var(--font-label);font-size:0.85rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--white);margin-bottom:0.75rem}
+.step-desc{font-size:0.9rem;color:var(--muted);line-height:1.7}
+
+/* PAGE 3 REQUEST */
+.request-page{min-height:calc(100vh - 72px);padding:3rem 5rem 5rem;background:var(--dark2);position:relative;overflow:hidden}
+.request-page::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 100px,rgba(184,149,42,0.015) 100px,rgba(184,149,42,0.015) 101px)}
+.request-inner{position:relative;z-index:1}
+.request-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;margin-top:2.5rem;align-items:start}
+.cat-picker-title{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem}
+.cat-card{background:var(--dark3);border:1px solid rgba(255,255,255,0.06);padding:1.2rem 1rem;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+.cat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform 0.25s}
+.cat-card:hover::before,.cat-card.selected::before{transform:scaleX(1)}
+.cat-card:hover,.cat-card.selected{border-color:rgba(184,149,42,0.4);background:rgba(184,149,42,0.06)}
+.cat-icon{font-size:1.5rem;display:block;margin-bottom:0.5rem}
+.cat-name{font-family:var(--font-label);font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--white)}
+.cat-check{position:absolute;top:0.6rem;right:0.6rem;width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--dark);opacity:0;transition:opacity 0.2s}
+.cat-card.selected .cat-check{opacity:1}
+.vin-form{background:var(--dark3);border:1px solid rgba(184,149,42,0.2);padding:2.5rem}
+.vin-note{display:flex;align-items:flex-start;gap:0.75rem;background:rgba(184,149,42,0.07);border-left:2px solid var(--gold);padding:0.85rem 1rem;margin-bottom:1.2rem;font-size:0.82rem;color:var(--muted);line-height:1.6}
+.vin-note strong{color:var(--gold-light)}
+.selected-cats-display{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;min-height:1.2rem}
+.form-submit{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+.form-note{font-size:0.78rem;color:var(--muted)}
+
+/* PAGE 4 HUBS */
+.hubs-page{min-height:calc(100vh - 72px);display:flex;flex-direction:column;justify-content:center;padding:4rem 5rem;background:var(--dark3)}
+.hub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(184,149,42,0.15);margin-top:3rem;border:1px solid rgba(184,149,42,0.15)}
+.hub-item{background:var(--dark3);padding:3rem 2rem;text-align:center}
+.hub-flag{font-size:3rem;display:block;margin-bottom:1rem}
+.hub-country{font-family:var(--font-label);font-size:1.1rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem}
+.hub-desc{font-size:0.85rem;color:var(--muted);line-height:1.7}
+.hub-tags{display:flex;flex-wrap:wrap;gap:0.4rem;justify-content:center;margin-top:1rem}
+.hub-tag{font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,0.05);padding:0.25rem 0.6rem}
+.market-badge{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.08);font-family:var(--font-label);font-size:0.78rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--light)}
+.market-badge span{font-size:1rem}
+
+/* PAGE 5 WHY */
+.why-page{min-height:calc(100vh - 72px);display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;padding:4rem 5rem;background:var(--dark)}
+.why-eyebrow{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:flex;align-items:center;gap:1rem}
+.why-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.why-title{font-family:var(--font-display);font-size:clamp(2rem,3vw,3rem);font-weight:300;color:var(--white);margin-bottom:2rem}
+.why-title em{font-style:italic;color:var(--gold)}
+.feature-item{display:flex;gap:1.5rem;align-items:flex-start;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.feature-item:last-child{border-bottom:none;padding-bottom:0}
+.feature-icon-wrap{width:3rem;height:3rem;border:1px solid rgba(184,149,42,0.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;color:var(--gold)}
+.feature-title{font-family:var(--font-label);font-size:0.9rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--white);margin-bottom:0.4rem}
+.feature-desc{font-size:0.88rem;color:var(--muted);line-height:1.7}
+.why-quote{background:var(--dark2);border:1px solid rgba(184,149,42,0.2);padding:3rem;position:relative}
+.why-quote::before{content:'"';font-family:var(--font-display);font-size:8rem;color:rgba(184,149,42,0.15);position:absolute;top:-1rem;left:1.5rem;line-height:1}
+.why-quote-text{font-family:var(--font-display);font-size:1.5rem;font-weight:300;font-style:italic;color:var(--light);line-height:1.6;position:relative;z-index:1}
+.why-quote-author{margin-top:1.5rem;font-family:var(--font-label);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)}
+.why-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(184,149,42,0.15);margin-top:1.5rem;border:1px solid rgba(184,149,42,0.15)}
+.why-stat{background:var(--dark2);padding:1.5rem;text-align:center}
+.why-stat-num{font-family:var(--font-display);font-size:2.2rem;font-weight:600;color:var(--gold);line-height:1}
+.why-stat-lbl{font-family:var(--font-label);font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem}
+
+/* PAGE 6 CONTACT */
+.contact-page{min-height:calc(100vh - 72px);display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;padding:4rem 5rem;background:var(--dark)}
+.contact-eyebrow{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:flex;align-items:center;gap:1rem}
+.contact-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.contact-title{font-family:var(--font-display);font-size:clamp(2rem,3vw,3rem);font-weight:300;color:var(--white);margin-bottom:1rem}
+.contact-title em{font-style:italic;color:var(--gold)}
+.contact-desc{font-size:1rem;color:var(--muted);margin-bottom:2rem;line-height:1.8}
+.cta-channels{display:flex;flex-direction:column;gap:1rem}
+.cta-channel{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.5rem;background:var(--dark2);border:1px solid rgba(255,255,255,0.06);text-decoration:none;color:inherit;transition:border-color 0.2s}
+.cta-channel:hover{border-color:rgba(184,149,42,0.4)}
+.cta-channel-icon{width:2.5rem;height:2.5rem;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.cta-channel-info .ch-name{font-family:var(--font-label);font-size:0.82rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--white)}
+.cta-channel-info .ch-val{font-size:0.85rem;color:var(--muted)}
+.contact-right{background:var(--dark2);border:1px solid rgba(184,149,42,0.2);padding:3rem}
+.contact-right-title{font-family:var(--font-display);font-size:1.8rem;font-weight:300;color:var(--white);margin-bottom:1rem}
+.tracking-result{display:none;margin-top:1.5rem}
+.tracking-result.show{display:block}
+.track-status{display:flex;flex-direction:column;gap:0.75rem}
+.track-step{display:flex;gap:1rem;align-items:flex-start;font-size:0.88rem}
+.track-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.2);margin-top:4px;flex-shrink:0}
+.track-dot.active{background:var(--gold)}
+.track-dot.done{background:#25D366}
+.track-line{width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 auto}
+
+/* PAGE 7 — M-PESA CHECKOUT */
+.checkout-page{min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;padding:4rem 5rem;background:var(--dark)}
+.checkout-inner{width:100%;max-width:960px}
+.checkout-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:2.5rem;align-items:start}
+
+.invoice-card{background:var(--dark2);border:1px solid rgba(184,149,42,0.2);padding:2.5rem}
+.invoice-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+.invoice-brand{font-family:var(--font-label);font-size:1.1rem;font-weight:700;letter-spacing:0.2em;color:var(--gold)}
+.invoice-badge{font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;background:rgba(184,149,42,0.1);border:1px solid rgba(184,149,42,0.3);color:var(--gold);padding:0.3rem 0.7rem}
+.invoice-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.88rem}
+.invoice-row:last-child{border-bottom:none}
+.invoice-label{color:var(--muted);font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase}
+.invoice-value{color:var(--white);font-weight:400;text-align:right;max-width:60%}
+.invoice-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(184,149,42,0.25)}
+.invoice-total-label{font-family:var(--font-label);font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--white)}
+.invoice-total-amount{font-family:var(--font-display);font-size:2.2rem;font-weight:600;color:var(--gold)}
+
+/* M-Pesa panel */
+.mpesa-panel{background:var(--dark2);border:1px solid rgba(184,149,42,0.2);padding:2.5rem}
+.mpesa-logo-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.mpesa-logo{background:#4CAF50;color:#fff;font-family:var(--font-label);font-weight:700;font-size:1rem;letter-spacing:0.1em;padding:0.4rem 1rem;display:inline-block}
+.mpesa-panel-title{font-family:var(--font-display);font-size:1.6rem;font-weight:300;color:var(--white);margin-bottom:0.4rem}
+.mpesa-panel-sub{font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7}
+
+/* Tabs */
+.method-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.8rem}
+.method-tab{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:0.85rem 0.5rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-family:var(--font-label);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.method-tab:hover{border-color:rgba(184,149,42,0.3);color:var(--light)}
+.method-tab.active{border-color:rgba(184,149,42,0.5);background:rgba(184,149,42,0.08);color:var(--gold)}
+.method-tab-icon{width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff;flex-shrink:0}
+.method-pane{display:none}
+.method-pane.active{display:block}
+.mpesa-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:1.5rem;border:1px solid rgba(184,149,42,0.2)}
+.mpesa-tab{flex:1;padding:0.75rem;font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;background:transparent;color:var(--muted);border:none;cursor:pointer;transition:all 0.2s}
+.mpesa-tab.active{background:rgba(184,149,42,0.12);color:var(--gold)}
+.mpesa-tab:first-child{border-right:1px solid rgba(184,149,42,0.2)}
+
+.mpesa-pane{display:none}
+.mpesa-pane.active{display:block}
+
+/* Paybill instructions */
+.paybill-box{background:var(--dark3);border:1px solid rgba(184,149,42,0.15);padding:1.5rem;margin-bottom:1.5rem}
+.paybill-number{font-family:var(--font-display);font-size:2.5rem;font-weight:600;color:var(--gold);line-height:1;margin-bottom:0.25rem}
+.paybill-label{font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:0.85rem;margin-bottom:1.5rem}
+.steps-list li{display:flex;gap:0.85rem;align-items:flex-start;font-size:0.88rem;color:var(--muted)}
+.step-badge{width:22px;height:22px;border-radius:50%;background:rgba(184,149,42,0.15);border:1px solid rgba(184,149,42,0.3);color:var(--gold);font-family:var(--font-label);font-size:0.68rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text strong{color:var(--white)}
+
+/* STK Push */
+.stk-form{display:flex;flex-direction:column;gap:1rem}
+.stk-input-row{display:flex;gap:0.75rem}
+.stk-input-row input{flex:1}
+.stk-send-btn{padding:0.75rem 1.2rem;background:var(--gold);color:var(--dark);font-family:var(--font-label);font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.stk-send-btn:hover{background:var(--gold-light)}
+.stk-send-btn:disabled{opacity:0.5;cursor:not-allowed}
+.stk-status{display:none;padding:0.85rem 1rem;font-size:0.85rem;line-height:1.6}
+.stk-status.show{display:block}
+.stk-status.pending{background:rgba(184,149,42,0.08);border-left:2px solid var(--gold);color:var(--muted)}
+.stk-status.success{background:rgba(37,211,102,0.08);border-left:2px solid #25D366;color:#25D366}
+.stk-status.error{background:rgba(255,80,80,0.08);border-left:2px solid #ff5050;color:#ff9090}
+.stk-api-note{font-size:0.75rem;color:var(--mid);line-height:1.6;margin-top:1rem;padding:0.85rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.05)}
+.stk-api-note a{color:var(--gold);text-decoration:none}
+
+/* Confirm slip */
+.confirm-slip{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06)}
+.confirm-slip-title{font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem}
+.slip-row{display:flex;gap:0.75rem;margin-bottom:0.75rem}
+.slip-row input{flex:1}
+.slip-confirm-btn{padding:0.75rem 1rem;background:transparent;color:var(--gold);font-family:var(--font-label);font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--gold);cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.slip-confirm-btn:hover{background:var(--gold);color:var(--dark)}
+
+.payment-success{display:none;text-align:center;padding:1.5rem 0}
+.payment-success.show{display:block}
+.success-icon{font-size:3rem;margin-bottom:1rem}
+.success-title{font-family:var(--font-display);font-size:2rem;font-weight:300;color:var(--white);margin-bottom:0.5rem}
+.success-sub{font-size:0.88rem;color:var(--muted);line-height:1.7}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark2);border:1px solid rgba(184,149,42,0.4);border-left:3px solid var(--gold);padding:1rem 1.5rem;font-size:0.9rem;color:var(--white);z-index:300;display:none;max-width:320px;animation:slideIn 0.3s ease}
+.toast.show{display:block}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Mobile */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr}
+  .hero-left{padding:3rem 1.5rem}
+  .hero-right{height:260px}
+  .brands,.process-page,.hubs-page{padding:3rem 1.5rem}
+  .request-page,.checkout-page{padding:2rem 1.5rem 4rem}
+  .why-page,.contact-page{grid-template-columns:1fr;gap:3rem;padding:3rem 1.5rem}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps::before{display:none}
+  .hub-grid{grid-template-columns:1fr 1fr}
+  .request-layout,.checkout-layout{grid-template-columns:1fr;gap:2rem}
+  .cat-grid{grid-template-columns:repeat(3,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .page-arrow{display:none}
+}</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="goTo(0)">APEX<span>MOTOREN</span> <span style="font-size:0.7rem;letter-spacing:0.2em;color:var(--muted);font-weight:300">KENYA</span></div>
+  <ul class="nav-links">
+    <li><button onclick="goTo(0)" class="active" id="nav-0">Home</button></li>
+    <li><button onclick="goTo(1)" id="nav-1">How It Works</button></li>
+    <li><button onclick="goTo(2)" id="nav-2">Request Parts</button></li>
+    <li><button onclick="goTo(3)" id="nav-3">Our Network</button></li>
+    <li><button onclick="goTo(4)" id="nav-4">Why Us</button></li>
+    <li><button onclick="goTo(5)" id="nav-5">Contact</button></li>
+    <li><button onclick="goTo(6)" id="nav-6">Pay Invoice</button></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="https://wa.me/254700000000" class="btn-whatsapp" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 0C5.373 0 0 5.373 0 12c0 2.117.554 4.104 1.524 5.83L0 24l6.335-1.498A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 11.999 0zM12 22c-1.85 0-3.59-.5-5.088-1.373l-.363-.215-3.762.889.903-3.665-.237-.376A9.952 9.952 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.478 10-10 10z"/></svg>
+      WhatsApp
+    </a>
+    <button class="btn-outline" onclick="goTo(6)">Pay Invoice</button>
+  </div>
+</nav>
+
+<button class="page-arrow prev hidden" id="arrow-prev" onclick="goTo(currentPage-1)">←</button>
+<button class="page-arrow next" id="arrow-next" onclick="goTo(currentPage+1)">→</button>
+
+<div class="page-indicator">
+  <button class="page-dot active" onclick="goTo(0)"></button>
+  <button class="page-dot" onclick="goTo(1)"></button>
+  <button class="page-dot" onclick="goTo(2)"></button>
+  <button class="page-dot" onclick="goTo(3)"></button>
+  <button class="page-dot" onclick="goTo(4)"></button>
+  <button class="page-dot" onclick="goTo(5)"></button>
+  <button class="page-dot" onclick="goTo(6)"></button>
+</div>
+
+<div class="pages-wrapper">
+
+  <!-- PAGE 1: HOME -->
+  <div class="page active" id="page-0">
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-eyebrow">Premium OEM &amp; Aftermarket Parts</div>
+        <h1 class="hero-title">Precision Parts<br>for <em>Extraordinary</em><br>Machines</h1>
+        <p class="hero-sub">VIN-accurate sourcing from Dubai, Germany, UK &amp; Japan. Delivered to Kenya, Uganda &amp; Tanzania with full OEM warranty backing.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="goTo(2)">Request Parts by VIN</button>
+          <button class="btn-outline" onclick="goTo(1)">How It Works</button>
+        </div>
+        <div class="hero-badges">
+          <div class="hero-badge"><span class="num">4</span><span class="lbl">Global Hubs</span></div>
+          <div class="hero-badge"><span class="num">3</span><span class="lbl">Markets Served</span></div>
+          <div class="hero-badge"><span class="num">48h</span><span class="lbl">Quote Turnaround</span></div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-right-bg"></div>
+        <div class="hero-car-visual">
+          <svg class="hero-car-svg" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="#B8952A" stroke-width="1" opacity="0.6">
+              <path d="M80 200 Q80 200 100 200 L120 180 Q200 120 300 115 Q380 110 450 130 L510 160 L530 200 Z" stroke-width="1.5"/>
+              <path d="M160 180 Q200 140 280 130 Q360 120 420 140 L460 165" stroke-width="1.5"/>
+              <path d="M175 175 Q195 148 240 140 L270 138 L265 172 Z" stroke="#D4AF50" stroke-width="0.8" fill="rgba(184,149,42,0.05)"/>
+              <path d="M275 138 L340 138 L338 170 L272 172 Z" stroke="#D4AF50" stroke-width="0.8" fill="rgba(184,149,42,0.05)"/>
+              <path d="M346 140 L400 148 L400 168 L342 168 Z" stroke="#D4AF50" stroke-width="0.8" fill="rgba(184,149,42,0.05)"/>
+              <circle cx="165" cy="200" r="38" stroke-width="1.5"/>
+              <circle cx="165" cy="200" r="22" stroke="#D4AF50" stroke-width="0.8"/>
+              <circle cx="165" cy="200" r="6" fill="#B8952A"/>
+              <circle cx="430" cy="200" r="38" stroke-width="1.5"/>
+              <circle cx="430" cy="200" r="22" stroke="#D4AF50" stroke-width="0.8"/>
+              <circle cx="430" cy="200" r="6" fill="#B8952A"/>
+              <line x1="165" y1="178" x2="165" y2="222" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="143" y1="200" x2="187" y2="200" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="150" y1="184" x2="180" y2="216" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="150" y1="216" x2="180" y2="184" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="430" y1="178" x2="430" y2="222" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="408" y1="200" x2="452" y2="200" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="415" y1="184" x2="445" y2="216" stroke="#D4AF50" stroke-width="0.6"/>
+              <line x1="415" y1="216" x2="445" y2="184" stroke="#D4AF50" stroke-width="0.6"/>
+              <path d="M510 165 L530 165 L530 180 L520 185" stroke-width="0.8"/>
+              <path d="M80 180 L90 175 L100 185" stroke-width="0.8"/>
+              <line x1="50" y1="238" x2="560" y2="238" stroke="rgba(184,149,42,0.3)" stroke-width="0.5"/>
+            </g>
+            <text x="300" y="285" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="10" fill="rgba(184,149,42,0.4)" letter-spacing="8">APEX MOTOREN KENYA</text>
+          </svg>
+        </div>
+        <div class="hero-divider"></div>
+      </div>
+    </section>
+    <div class="brands">
+      <div class="brands-inner">
+        <span class="brands-label">We source parts for</span>
+        <span class="brand-item">Mercedes-Benz</span>
+        <span class="brand-item">BMW</span>
+        <span class="brand-item">Porsche</span>
+        <span class="brand-item">Land Rover</span>
+        <span class="brand-item">Audi</span>
+        <span class="brand-item">Lexus</span>
+        <span class="brand-item">Range Rover</span>
+        <span class="brand-item">Ferrari</span>
+        <span class="brand-item">Bentley</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: HOW IT WORKS -->
+  <div class="page" id="page-1">
+    <div class="process-page">
+      <div style="text-align:center;margin-bottom:4rem">
+        <div class="section-eyebrow">The Process</div>
+        <h2 class="section-title">From VIN to <em>Doorstep</em></h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div class="step-title">Submit VIN</div><p class="step-desc">Share your Vehicle Identification Number. This ensures we source the exact specification for your model, year, and variant.</p></div>
+        <div class="step"><div class="step-num">02</div><div class="step-title">Receive Quote</div><p class="step-desc">Within 48 hours, we provide a detailed quote with pricing, sourcing location, and estimated delivery timeline.</p></div>
+        <div class="step"><div class="step-num">03</div><div class="step-title">We Source</div><p class="step-desc">Our network in Dubai, Germany, UK &amp; Japan locates genuine OEM or premium aftermarket parts on your behalf.</p></div>
+        <div class="step"><div class="step-num">04</div><div class="step-title">Delivered</div><p class="step-desc">Parts are cleared through customs and delivered to your garage or address in Kenya, Uganda, or Tanzania.</p></div>
+      </div>
+      <div style="text-align:center;margin-top:3rem">
+        <button class="btn-primary" onclick="goTo(2)">Request Your Parts →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: REQUEST PARTS -->
+  <div class="page" id="page-2">
+    <div class="request-page">
+      <div class="request-inner">
+        <div style="text-align:center">
+          <div class="section-eyebrow">Request a Quote</div>
+          <h2 class="section-title">Select Category &amp; <em>Submit Request</em></h2>
+        </div>
+        <div class="request-layout">
+          <div>
+            <div class="cat-picker-title">1. Select part category</div>
+            <div class="cat-grid">
+              <div class="cat-card" onclick="toggleCat(this,'Engine & Drivetrain')"><span class="cat-icon">🔧</span><div class="cat-name">Engine &amp; Drivetrain</div><div class="cat-check">✓</div></div>
+              <div class="cat-card" onclick="toggleCat(this,'Transmission')"><span class="cat-icon">⚙️</span><div class="cat-name">Transmission</div><div class="cat-check">✓</div></div>
+              <div class="cat-card" onclick="toggleCat(this,'Suspension & Brakes')"><span class="cat-icon">🛞</span><div class="cat-name">Suspension &amp; Brakes</div><div class="cat-check">✓</div></div>
+              <div class="cat-card" onclick="toggleCat(this,'Electrical & Electronics')"><span class="cat-icon">💡</span><div class="cat-name">Electrical &amp; Electronics</div><div class="cat-check">✓</div></div>
+              <div class="cat-card" onclick="toggleCat(this,'Body & Exterior')"><span class="cat-icon">🎨</span><div class="cat-name">Body &amp; Exterior</div><div class="cat-check">✓</div></div>
+              <div class="cat-card" onclick="toggleCat(this,'HVAC & Cooling')"><span class="cat-icon">🌬️</span><div class="cat-name">HVAC &amp; Cooling</div><div class="cat-check">✓</div></div>
+            </div>
+            <div class="selected-cats-display" id="selectedCatsDisplay">No category selected</div>
+            <div class="vin-note"><span>📍</span><div><strong>Why VIN?</strong> Your 17-character VIN guarantees exact part matching — no wrong fitments, no guesswork.</div></div>
+          </div>
+          <div class="vin-form">
+            <div style="font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem">2. Fill in your details</div>
+            <form id="quoteForm" onsubmit="submitForm(event)">
+              <div class="form-row">
+                <div class="form-group"><label>Full Name</label><input type="text" id="fullname" placeholder="Your full name" required></div>
+                <div class="form-group"><label>WhatsApp / Phone</label><input type="tel" id="phone" placeholder="+254 7XX XXX XXX" required></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="email@example.com"></div>
+                <div class="form-group"><label>Country</label><select id="country" required><option value="">Select country</option><option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Other</option></select></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>VIN Number</label><input type="text" id="vin" placeholder="e.g. WBA3A5G5XDNP26082" maxlength="17" style="letter-spacing:0.1em;font-family:monospace;font-size:0.88rem"></div>
+                <div class="form-group"><label>Vehicle (if no VIN)</label><input type="text" id="vehicle" placeholder="e.g. 2020 BMW X5"></div>
+              </div>
+              <div class="form-group full" style="margin-bottom:0">
+                <label>Parts Description</label>
+                <textarea id="parts" placeholder="Describe the parts you need..." required></textarea>
+              </div>
+              <input type="hidden" id="selectedCats">
+              <div class="form-submit">
+                <p class="form-note">Response within 48 hrs. We'll send M-Pesa payment details.</p>
+                <button type="submit" class="btn-primary">Submit Request →</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: HUBS -->
+  <div class="page" id="page-3">
+    <div class="hubs-page">
+      <div style="text-align:center">
+        <div class="section-eyebrow">Global Sourcing Network</div>
+        <h2 class="section-title">Where We <em>Source</em></h2>
+      </div>
+      <div class="hub-grid">
+        <div class="hub-item"><span class="hub-flag">🇦🇪</span><div class="hub-country">Dubai</div><p class="hub-desc">Regional trading hub with fast East Africa transit times and competitive pricing across all major brands.</p><div class="hub-tags"><span class="hub-tag">All Brands</span><span class="hub-tag">Fast Shipping</span></div></div>
+        <div class="hub-item"><span class="hub-flag">🇩🇪</span><div class="hub-country">Germany</div><p class="hub-desc">OEM direct sourcing for BMW, Mercedes-Benz, Audi, Porsche, and Volkswagen Group vehicles.</p><div class="hub-tags"><span class="hub-tag">OEM Direct</span><span class="hub-tag">European</span></div></div>
+        <div class="hub-item"><span class="hub-flag">🇬🇧</span><div class="hub-country">United Kingdom</div><p class="hub-desc">Premium sourcing for Land Rover, Range Rover, Bentley, Rolls-Royce, and McLaren.</p><div class="hub-tags"><span class="hub-tag">British Brands</span><span class="hub-tag">Used OEM</span></div></div>
+        <div class="hub-item"><span class="hub-flag">🇯🇵</span><div class="hub-country">Japan</div><p class="hub-desc">JDM and export-spec parts for Lexus, Toyota, Nissan, Honda, and Mazda vehicles.</p><div class="hub-tags"><span class="hub-tag">JDM Parts</span><span class="hub-tag">Toyota / Lexus</span></div></div>
+      </div>
+      <div style="text-align:center;margin-top:2.5rem">
+        <p style="font-family:var(--font-label);font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Delivering to</p>
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+          <div class="market-badge"><span>🇰🇪</span> Kenya</div>
+          <div class="market-badge"><span>🇺🇬</span> Uganda</div>
+          <div class="market-badge"><span>🇹🇿</span> Tanzania</div>
+          <div class="market-badge" style="color:var(--muted);border-style:dashed"><span>🌍</span> More Coming</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: WHY US -->
+  <div class="page" id="page-4">
+    <div class="why-page">
+      <div class="why-features">
+        <div class="why-eyebrow">Why Choose Us</div>
+        <h2 class="why-title">Built on <em>Trust</em><br>&amp; Precision</h2>
+        <div class="feature-item"><div class="feature-icon-wrap">✓</div><div><div class="feature-title">VIN-Accurate Sourcing</div><p class="feature-desc">Every part is matched to your exact vehicle specification. No wrong fitments, no guesswork, no returned orders.</p></div></div>
+        <div class="feature-item"><div class="feature-icon-wrap">⬛</div><div><div class="feature-title">OEM Warranty Backed</div><p class="feature-desc">We supply genuine OEM parts with full manufacturer warranty, or clearly documented premium aftermarket alternatives.</p></div></div>
+        <div class="feature-item"><div class="feature-icon-wrap">⚡</div><div><div class="feature-title">48-Hour Quote Guarantee</div><p class="feature-desc">Submit your request and receive a detailed, transparent quote within two business days.</p></div></div>
+        <div class="feature-item"><div class="feature-icon-wrap">🌍</div><div><div class="feature-title">Customs Cleared Delivery</div><p class="feature-desc">We handle all import logistics and customs documentation, delivered to your door in East Africa.</p></div></div>
+      </div>
+      <div>
+        <div class="why-quote"><p class="why-quote-text">"We don't sell parts. We source the exact component your vehicle needs — from the source it was built for."</p><div class="why-quote-author">— Apex Motoren Kenya</div></div>
+        <div class="why-stats">
+          <div class="why-stat"><div class="why-stat-num">25–60%</div><div class="why-stat-lbl">Client Savings vs. Dealers</div></div>
+          <div class="why-stat"><div class="why-stat-num">100%</div><div class="why-stat-lbl">VIN-Matched Parts</div></div>
+          <div class="why-stat"><div class="why-stat-num">4</div><div class="why-stat-lbl">Global Source Hubs</div></div>
+          <div class="why-stat"><div class="why-stat-num">3</div><div class="why-stat-lbl">Countries Served</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: CONTACT -->
+  <div class="page" id="page-5">
+    <div class="contact-page">
+      <div>
+        <div class="contact-eyebrow">Get In Touch</div>
+        <h2 class="contact-title">Let's Find<br>Your <em>Part</em></h2>
+        <p class="contact-desc">Our sourcing team is ready. Reach us via WhatsApp for the fastest response, or send a message and we'll get back within 24 hours.</p>
+        <div class="cta-channels">
+          <a href="https://wa.me/254700000000" class="cta-channel" target="_blank">
+            <div class="cta-channel-icon" style="background:#25D366;color:#000;border-radius:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 0C5.373 0 0 5.373 0 12c0 2.117.554 4.104 1.524 5.83L0 24l6.335-1.498A11.956 11.956 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 11.999 0zM12 22c-1.85 0-3.59-.5-5.088-1.373l-.363-.215-3.762.889.903-3.665-.237-.376A9.952 9.952 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.478 10-10 10z"/></svg></div>
+            <div class="cta-channel-info"><div class="ch-name">WhatsApp Business</div><div class="ch-val">+254 700 000 000 — Fastest Response</div></div>
+          </a>
+          <a href="/cdn-cgi/l/email-protection#f68697848285b69786938e9b998299849398d895999b" class="cta-channel">
+            <div class="cta-channel-icon" style="background:rgba(184,149,42,0.15);color:var(--gold);border-radius:4px">✉</div>
+            <div class="cta-channel-info"><div class="ch-name">Email</div><div class="ch-val"><span class="__cf_email__" data-cfemail="aedecfdcdaddeecfdecbd6c3c1dac1dccbc080cdc1c3">[email&#160;protected]</span></div></div>
+          </a>
+          <a href="https://instagram.com/apexmotoren" class="cta-channel" target="_blank">
+            <div class="cta-channel-icon" style="background:rgba(255,100,100,0.1);color:#ff6464;border-radius:4px">📷</div>
+            <div class="cta-channel-info"><div class="ch-name">Instagram</div><div class="ch-val">@apexmotoren</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="contact-right">
+        <div class="contact-right-title">Track Your Order</div>
+        <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.5rem">Have a reference number? Check the status of your parts request.</p>
+        <div class="form-group" style="margin-bottom:1rem"><label>Order Reference Number</label><input type="text" id="track-input" placeholder="e.g. APX-2024-0142"></div>
+        <button class="btn-primary" onclick="trackOrder()" style="width:100%">Track Order →</button>
+        <div class="tracking-result" id="trackResult">
+          <div style="border-top:1px solid rgba(255,255,255,0.08);margin:1.5rem 0"></div>
+          <div class="track-status" id="trackStatus"></div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:2rem;padding-top:1.5rem">
+          <p style="font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid)">© 2025 Apex Motoren Kenya · Dubai · Germany · UK · Japan → East Africa</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 7: PAY INVOICE -->
+  <div class="page" id="page-6">
+    <div class="checkout-page">
+      <div class="checkout-inner">
+        <div style="text-align:center">
+          <div class="section-eyebrow">Secure Checkout</div>
+          <h2 class="section-title">Pay Your <em>Invoice</em></h2>
+        </div>
+        <div class="checkout-layout">
+
+          <!-- Invoice summary -->
+          <div class="invoice-card">
+            <div class="invoice-header">
+              <div>
+                <div class="invoice-brand">APEXMOTOREN KENYA</div>
+                <div style="font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:0.25rem">Invoice</div>
+              </div>
+              <div class="invoice-badge" id="inv-status">Awaiting Payment</div>
+            </div>
+
+            <div style="margin-bottom:1.5rem">
+              <div style="font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Invoice Details</div>
+              <div class="form-group" style="margin-bottom:0.75rem">
+                <label>Reference Number</label>
+                <input type="text" id="inv-ref" placeholder="e.g. APX-2024-0142" oninput="updateInvoice()">
+              </div>
+              <div class="form-group" style="margin-bottom:0.75rem">
+                <label>Customer Name</label>
+                <input type="text" id="inv-name" placeholder="Your full name" oninput="updateInvoice()">
+              </div>
+              <div class="form-group" style="margin-bottom:0.75rem">
+                <label>Parts Description</label>
+                <input type="text" id="inv-parts" placeholder="e.g. BMW X5 Front Brake Kit" oninput="updateInvoice()">
+              </div>
+              <div class="form-group">
+                  <label>Amount</label>
+                  <div style="display:flex;gap:0.5rem">
+                    <select id="inv-currency" style="width:90px;flex-shrink:0" oninput="updateInvoice()">
+                      <option value="KES">KES</option>
+                      <option value="USD">USD</option>
+                      <option value="UGX">UGX</option>
+                      <option value="TZS">TZS</option>
+                    </select>
+                    <input type="number" id="inv-amount" placeholder="0.00" min="1" step="0.01" oninput="updateInvoice()" style="flex:1">
+                  </div>
+                </div>
+            </div>
+
+            <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:1.2rem">
+              <div class="invoice-row"><span class="invoice-label">Reference</span><span class="invoice-value" id="disp-ref">—</span></div>
+              <div class="invoice-row"><span class="invoice-label">Customer</span><span class="invoice-value" id="disp-name">—</span></div>
+              <div class="invoice-row"><span class="invoice-label">Parts</span><span class="invoice-value" id="disp-parts">—</span></div>
+              <div class="invoice-row"><span class="invoice-label">Currency</span><span class="invoice-value" id="disp-currency">KES</span></div>
+            </div>
+
+            <div class="invoice-total">
+              <span class="invoice-total-label">Total Due</span>
+              <span class="invoice-total-amount" id="disp-amount">KES 0.00</span>
+            </div>
+          </div>
+
+          <!-- Payment panel -->
+          <div class="mpesa-panel">
+            <div class="mpesa-panel-title">Complete Payment</div>
+            <p class="mpesa-panel-sub">Choose your preferred payment method below.</p>
+
+            <!-- Method selector tabs -->
+            <div class="method-tabs" id="method-tabs">
+              <button class="method-tab active" onclick="switchMethod('mpesa')">
+                <span class="method-tab-icon" style="background:#4CAF50">M</span>
+                M-Pesa
+              </button>
+              <button class="method-tab" onclick="switchMethod('card')">
+                <span class="method-tab-icon" style="background:#1a1f71">💳</span>
+                Visa / Card
+              </button>
+              <button class="method-tab" onclick="switchMethod('paypal')">
+                <span class="method-tab-icon" style="background:#003087">P</span>
+                PayPal
+              </button>
+            </div>
+
+            <!-- ── M-PESA METHOD ── -->
+            <div class="method-pane active" id="method-mpesa">
+              <div class="mpesa-tabs" style="margin-bottom:1.5rem">
+                <button class="mpesa-tab active" onclick="switchTab('paybill')">📱 Paybill / Till</button>
+                <button class="mpesa-tab" onclick="switchTab('stk')">⚡ STK Push</button>
+              </div>
+
+              <div class="mpesa-pane active" id="pane-paybill">
+                <div style="display:flex;gap:1rem;margin-bottom:1.5rem">
+                  <div class="paybill-box" style="flex:1">
+                    <div class="paybill-number">174379</div>
+                    <div class="paybill-label">Paybill Number</div>
+                  </div>
+                  <div class="paybill-box" style="flex:1">
+                    <div class="paybill-number" id="paybill-account" style="font-size:1.4rem">APX-REF</div>
+                    <div class="paybill-label">Account Number</div>
+                  </div>
+                </div>
+                <ul class="steps-list">
+                  <li><div class="step-badge">1</div><div class="step-text">Open <strong>M-Pesa</strong> → <strong>Lipa na M-Pesa</strong></div></li>
+                  <li><div class="step-badge">2</div><div class="step-text">Select <strong>Pay Bill</strong>, enter Paybill: <strong>174379</strong></div></li>
+                  <li><div class="step-badge">3</div><div class="step-text">Account Number: <strong id="step-account">your reference</strong></div></li>
+                  <li><div class="step-badge">4</div><div class="step-text">Amount: <strong id="step-amount">as per invoice</strong></div></li>
+                  <li><div class="step-badge">5</div><div class="step-text">Enter PIN → confirm, then paste code below</div></li>
+                </ul>
+                <div class="confirm-slip">
+                  <div class="confirm-slip-title">M-Pesa Confirmation Code</div>
+                  <div class="slip-row">
+                    <input type="text" id="mpesa-code" placeholder="e.g. QHX7K2ABCD" style="text-transform:uppercase;letter-spacing:0.1em;font-family:monospace">
+                    <button class="slip-confirm-btn" onclick="confirmPayment('mpesa-code','M-Pesa')">Confirm →</button>
+                  </div>
+                  <div style="font-size:0.75rem;color:var(--mid);margin-top:0.4rem">Sent via SMS after payment.</div>
+                </div>
+              </div>
+
+              <div class="mpesa-pane" id="pane-stk">
+                <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7">Enter your Safaricom number — we'll send a payment prompt to your phone.</p>
+                <div class="form-group" style="margin-bottom:1rem">
+                  <label>Safaricom Number</label>
+                  <div class="stk-input-row">
+                    <input type="tel" id="stk-phone" placeholder="e.g. 0712 345 678" maxlength="13">
+                    <button class="stk-send-btn" id="stk-btn" onclick="sendSTK()">Send →</button>
+                  </div>
+                </div>
+                <div class="stk-status" id="stk-status"></div>
+                <div class="stk-api-note"><strong style="color:var(--light);font-size:0.75rem">⚙ Dev:</strong> Connect to <a href="https://developer.safaricom.co.ke" target="_blank">Daraja API</a> stkpush endpoint to activate.</div>
+                <div class="confirm-slip" style="margin-top:1.2rem">
+                  <div class="confirm-slip-title">Enter Confirmation Code</div>
+                  <div class="slip-row">
+                    <input type="text" id="stk-code" placeholder="e.g. QHX7K2ABCD" style="text-transform:uppercase;letter-spacing:0.1em;font-family:monospace">
+                    <button class="slip-confirm-btn" onclick="confirmPayment('stk-code','M-Pesa')">Confirm →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── VISA / CARD METHOD ── -->
+            <div class="method-pane" id="method-card">
+              <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7">Pay securely with your Visa, Mastercard, or debit card. Your card details are never stored on our servers.</p>
+              <div class="card-logos" style="display:flex;gap:0.6rem;margin-bottom:1.5rem;align-items:center">
+                <div style="background:#1a1f71;color:#fff;font-family:var(--font-label);font-weight:700;font-size:0.75rem;padding:0.3rem 0.7rem;letter-spacing:0.05em">VISA</div>
+                <div style="background:#eb001b;color:#fff;font-family:var(--font-label);font-weight:700;font-size:0.65rem;padding:0.3rem 0.6rem;border-radius:2px">MC</div>
+                <div style="background:var(--dark3);color:var(--muted);font-family:var(--font-label);font-size:0.65rem;padding:0.3rem 0.6rem;border:1px solid rgba(255,255,255,0.1)">Debit</div>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--muted)">
+                  <span style="color:#4CAF50">🔒</span> SSL Secured
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:1rem">
+                <div class="form-group">
+                  <label>Cardholder Name</label>
+                  <input type="text" id="card-name" placeholder="Name as on card">
+                </div>
+                <div class="form-group">
+                  <label>Card Number</label>
+                  <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                  <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="text" id="card-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)">
+                  </div>
+                  <div class="form-group">
+                    <label>CVV</label>
+                    <input type="password" id="card-cvv" placeholder="•••" maxlength="4">
+                  </div>
+                </div>
+                <div class="stk-api-note" style="margin-bottom:0.5rem"><strong style="color:var(--light);font-size:0.75rem">⚙ Dev:</strong> Connect to <a href="https://stripe.com" target="_blank">Stripe</a> or <a href="https://flutterwave.com" target="_blank">Flutterwave</a> to process real card payments.</div>
+                <button class="btn-primary" style="width:100%" onclick="processCard()">Pay Now →</button>
+              </div>
+            </div>
+
+            <!-- ── PAYPAL METHOD ── -->
+            <div class="method-pane" id="method-paypal">
+              <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7">Pay with your PayPal balance, linked bank account, or card. Fast, secure, and buyer-protected.</p>
+              <div style="background:var(--dark3);border:1px solid rgba(255,255,255,0.06);padding:1.5rem;margin-bottom:1.5rem;text-align:center">
+                <svg height="28" viewBox="0 0 101 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.7"><path d="M12.237 2.8H4.437C3.887 2.8 3.387 3.2 3.287 3.75L0.037 24.25C-0.013 24.6 0.237 24.9 0.587 24.9H4.337C4.887 24.9 5.387 24.5 5.487 23.95L6.337 18.55C6.437 18 6.937 17.6 7.487 17.6H9.987C15.137 17.6 18.137 15.1 18.887 10.2C19.237 8.05 18.887 6.35 17.887 5.15C16.787 3.85 14.787 2.8 12.237 2.8Z" fill="#003087"/><path d="M35.437 10.35H31.687C31.387 10.35 31.137 10.6 31.087 10.9L30.887 12.1L30.587 11.65C29.637 10.25 27.537 9.8 25.487 9.8C20.737 9.8 16.737 13.35 15.987 18.3C15.587 20.75 16.187 23.1 17.587 24.75C18.887 26.3 20.787 26.95 23.037 26.95C26.887 26.95 29.037 24.45 29.037 24.45L28.837 25.65C28.787 26 29.037 26.3 29.387 26.3H32.787C33.337 26.3 33.837 25.9 33.937 25.35L35.987 11.1C36.087 10.7 35.787 10.35 35.437 10.35Z" fill="#003087"/><path d="M67.737 2.8H59.937C59.387 2.8 58.887 3.2 58.787 3.75L55.537 24.25C55.487 24.6 55.737 24.9 56.087 24.9H60.087C60.487 24.9 60.787 24.65 60.837 24.25L61.737 18.55C61.837 18 62.337 17.6 62.887 17.6H65.387C70.537 17.6 73.537 15.1 74.287 10.2C74.637 8.05 74.237 6.35 73.287 5.15C72.237 3.85 70.237 2.8 67.737 2.8Z" fill="#009CDE"/><path d="M90.937 10.35H87.187C86.887 10.35 86.637 10.6 86.587 10.9L86.387 12.1L86.087 11.65C85.137 10.25 83.037 9.8 80.987 9.8C76.237 9.8 72.237 13.35 71.487 18.3C71.087 20.75 71.687 23.1 73.087 24.75C74.387 26.3 76.287 26.95 78.537 26.95C82.387 26.95 84.537 24.45 84.537 24.45L84.337 25.65C84.287 26 84.537 26.3 84.887 26.3H88.287C88.837 26.3 89.337 25.9 89.437 25.35L91.487 11.1C91.537 10.7 91.287 10.35 90.937 10.35Z" fill="#009CDE"/><path d="M94.587 3.3L91.287 24.25C91.237 24.6 91.487 24.9 91.837 24.9H95.087C95.637 24.9 96.137 24.5 96.237 23.95L99.487 3.45C99.537 3.1 99.287 2.8 98.937 2.8H95.337C95.037 2.8 94.687 3 94.587 3.3Z" fill="#009CDE"/></svg>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:1rem">
+                <div class="form-group">
+                  <label>PayPal Email</label>
+                  <input type="email" id="paypal-email" placeholder="your@paypal.com">
+                </div>
+                <div id="paypal-button-container" style="min-height:48px"></div>
+                <div class="stk-api-note"><strong style="color:var(--light);font-size:0.75rem">⚙ Dev:</strong> Replace <code style="font-size:0.72rem;background:rgba(255,255,255,0.07);padding:0.1rem 0.3rem">client-id=sb</code> with your live PayPal Client ID from <a href="https://developer.paypal.com" target="_blank">developer.paypal.com</a>.</div>
+              </div>
+            </div>
+
+            <!-- Success (shared) -->
+            <div class="payment-success" id="paymentSuccess">
+              <div class="success-icon">✅</div>
+              <div class="success-title">Payment Confirmed</div>
+              <p class="success-sub" id="success-msg">Your payment has been received. We'll begin processing your order and contact you within 24 hours via WhatsApp.</p>
+              <button class="btn-primary" style="margin-top:1.5rem" onclick="goTo(5)">Track Your Order →</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end pages-wrapper -->
+
+<div class="toast" id="toast"></div>
+
+
+
+
+<script>
+function loadPayPalSDK(callback) {
+  if (window.paypal) { callback(); return; }
+  const script = document.createElement('script');
+  script.src = 'https://www.paypal.com/sdk/js?client-id=sb&currency=USD';
+  script.onload = callback;
+  script.onerror = function() { showToast('PayPal could not load. Check your connection.'); };
+  document.head.appendChild(script);
+}
+
+let currentPage = 0;
+const totalPages = 7;
+const selectedCategories = new Set();
+let paypalReady = false;
+
+function goTo(index) {
+  if (index < 0 || index >= totalPages) return;
+  const prev = document.getElementById('page-' + currentPage);
+  prev.classList.add('exit-left');
+  prev.classList.remove('active');
+  setTimeout(() => prev.classList.remove('exit-left'), 400);
+  currentPage = index;
+  const next = document.getElementById('page-' + currentPage);
+  next.classList.add('active');
+  next.scrollTop = 0;
+  document.querySelectorAll('.nav-links button').forEach((btn, i) => btn.classList.toggle('active', i === currentPage));
+  document.querySelectorAll('.page-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentPage));
+  document.getElementById('arrow-prev').classList.toggle('hidden', currentPage === 0);
+  document.getElementById('arrow-next').classList.toggle('hidden', currentPage === totalPages - 1);
+  if (currentPage === 6 && !paypalReady) initPayPal();
+}
+
+function toggleCat(card, name) {
+  card.classList.toggle('selected');
+  selectedCategories.has(name) ? selectedCategories.delete(name) : selectedCategories.add(name);
+  const d = document.getElementById('selectedCatsDisplay');
+  d.textContent = selectedCategories.size === 0 ? 'No category selected' : 'Selected: ' + Array.from(selectedCategories).join(', ');
+  document.getElementById('selectedCats').value = Array.from(selectedCategories).join(', ');
+}
+
+function submitForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Submit Request'; btn.disabled = false;
+    e.target.reset();
+    selectedCategories.clear();
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('selectedCatsDisplay').textContent = 'No category selected';
+    showToast('Request received! We will send your quote and payment details within 48 hours.');
+  }, 1500);
+}
+
+function updateInvoice() {
+  const ref = document.getElementById('inv-ref').value || '—';
+  const name = document.getElementById('inv-name').value || '—';
+  const parts = document.getElementById('inv-parts').value || '—';
+  const amount = parseFloat(document.getElementById('inv-amount').value) || 0;
+  const currency = document.getElementById('inv-currency').value || 'KES';
+  document.getElementById('disp-ref').textContent = ref;
+  document.getElementById('disp-name').textContent = name;
+  document.getElementById('disp-parts').textContent = parts;
+  document.getElementById('disp-currency').textContent = currency;
+  document.getElementById('disp-amount').textContent = currency + ' ' + amount.toLocaleString('en-KE', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const acct = document.getElementById('paybill-account');
+  const stepAcct = document.getElementById('step-account');
+  const stepAmt = document.getElementById('step-amount');
+  if (acct) acct.textContent = ref === '—' ? 'APX-REF' : ref;
+  if (stepAcct) stepAcct.textContent = ref === '—' ? 'your reference number' : ref;
+  if (stepAmt) stepAmt.textContent = amount > 0 ? (currency + ' ' + amount.toLocaleString()) : 'as per invoice';
+}
+
+function switchMethod(method) {
+  document.querySelectorAll('.method-tab').forEach((t, i) => {
+    t.classList.toggle('active', ['mpesa','card','paypal'][i] === method);
+  });
+  document.querySelectorAll('.method-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('method-' + method).classList.add('active');
+  if (method === 'paypal' && !paypalReady) initPayPal();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.mpesa-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'paybill') || (i === 1 && tab === 'stk'));
+  });
+  document.getElementById('pane-paybill').classList.toggle('active', tab === 'paybill');
+  document.getElementById('pane-stk').classList.toggle('active', tab === 'stk');
+}
+
+function sendSTK() {
+  const phone = document.getElementById('stk-phone').value.trim();
+  const amount = parseFloat(document.getElementById('inv-amount').value);
+  if (!phone) { showToast('Please enter your Safaricom phone number.'); return; }
+  if (!amount || amount <= 0) { showToast('Please fill in the invoice amount first.'); return; }
+  const btn = document.getElementById('stk-btn');
+  const status = document.getElementById('stk-status');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  status.className = 'stk-status pending show';
+  status.textContent = 'Sending M-Pesa prompt to ' + phone + '...';
+  setTimeout(() => {
+    btn.textContent = 'Send Prompt'; btn.disabled = false;
+    status.className = 'stk-status pending show';
+    status.innerHTML = 'Prompt sent to <strong style="color:var(--white)">' + phone + '</strong>. Enter PIN on your phone, then paste confirmation code below.';
+  }, 2000);
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if (v.length >= 3) v = v.substring(0,2) + ' / ' + v.substring(2);
+  el.value = v;
+}
+
+function processCard() {
+  const name = document.getElementById('card-name').value.trim();
+  const num = document.getElementById('card-number').value.replace(/\s/g,'');
+  const exp = document.getElementById('card-expiry').value;
+  const cvv = document.getElementById('card-cvv').value;
+  const amount = parseFloat(document.getElementById('inv-amount').value);
+  if (!name) { showToast('Please enter the cardholder name.'); return; }
+  if (num.length < 13) { showToast('Please enter a valid card number.'); return; }
+  if (!exp || exp.length < 4) { showToast('Please enter expiry date.'); return; }
+  if (!cvv || cvv.length < 3) { showToast('Please enter CVV.'); return; }
+  if (!amount || amount <= 0) { showToast('Please fill in the invoice amount first.'); return; }
+  const btn = event.target;
+  btn.textContent = 'Processing...'; btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Pay Now'; btn.disabled = false;
+    showSuccess('Visa/Card', 'TXN-' + Math.random().toString(36).substr(2,8).toUpperCase());
+  }, 2000);
+}
+
+function initPayPal() {
+  paypalReady = true;
+  loadPayPalSDK(function() {
+    paypal.Buttons({
+      style: { layout:'vertical', color:'gold', shape:'rect', label:'pay', height:45 },
+      createOrder: function(data, actions) {
+        const amount = parseFloat(document.getElementById('inv-amount').value);
+        if (!amount || amount <= 0) { showToast('Please enter invoice amount first.'); return Promise.reject(); }
+        const ref = document.getElementById('inv-ref').value || 'APEX-ORDER';
+        const desc = document.getElementById('inv-parts').value || 'Spare Parts';
+        return actions.order.create({
+          purchase_units: [{ description: desc + ' — ' + ref, amount: { value: amount.toFixed(2), currency_code: 'USD' } }],
+          application_context: { brand_name: 'Apex Motoren Kenya', shipping_preference: 'NO_SHIPPING' }
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          showSuccess('PayPal', details.id || data.orderID);
+        });
+      },
+      onError: function() { showToast('PayPal error. Please try again or use another method.'); },
+      onCancel: function() { showToast('Payment cancelled. You can try again anytime.'); }
+    }).render('#paypal-button-container');
+  });
+}
+
+function confirmPayment(inputId, method) {
+  const code = document.getElementById(inputId).value.trim().toUpperCase();
+  if (!code || code.length < 6) { showToast('Please enter a valid confirmation code.'); return; }
+  showSuccess(method || 'M-Pesa', code);
+}
+
+function showSuccess(method, ref) {
+  const badge = document.getElementById('inv-status');
+  badge.textContent = 'Paid';
+  badge.style.cssText = 'background:rgba(37,211,102,0.1);border-color:rgba(37,211,102,0.4);color:#25D366;font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.3rem 0.7rem';
+  const tabs = document.getElementById('method-tabs');
+  if (tabs) tabs.style.display = 'none';
+  document.querySelectorAll('.method-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('paymentSuccess').classList.add('show');
+  const msg = document.getElementById('success-msg');
+  if (msg) msg.textContent = 'Your ' + method + ' payment has been received (ref: ' + ref + '). We will begin processing your order and contact you within 24 hours via WhatsApp.';
+  showToast('Payment confirmed via ' + method + '! Ref: ' + ref);
+}
+
+function generateTrackHTML(ref) {
+  const steps = [
+    { label: 'Request Received', detail: 'Assigned reference ' + ref, state: 'done' },
+    { label: 'Sourcing in Progress', detail: 'Locating your part from global suppliers', state: 'done' },
+    { label: 'Part Located & Quoted', detail: 'Part found — awaiting your confirmation', state: 'active' },
+    { label: 'In Transit', detail: 'Shipment dispatched from source hub', state: '' },
+    { label: 'Customs Clearance', detail: 'Processing through East African customs', state: '' },
+    { label: 'Out for Delivery', detail: 'Final delivery to your address', state: '' },
+  ];
+  return steps.map((s, i) => '<div class="track-step"><div><div class="track-dot ' + s.state + '"></div>' + (i < steps.length - 1 ? '<div class="track-line"></div>' : '') + '</div><div><div style="font-weight:500;color:' + (s.state ? 'var(--white)' : 'var(--mid)') + ';font-size:0.88rem">' + s.label + '</div><div style="font-size:0.8rem;color:var(--muted)">' + s.detail + '</div></div></div>').join('');
+}
+
+function trackOrder() {
+  const val = document.getElementById('track-input').value.trim();
+  if (!val) { showToast('Please enter your order reference number.'); return; }
+  document.getElementById('trackStatus').innerHTML = generateTrackHTML(val);
+  document.getElementById('trackResult').classList.add('show');
+}
+
+function showToast(msg, duration=5000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') goTo(currentPage + 1);
+  if (e.key === 'ArrowLeft') goTo(currentPage - 1);
+});
+
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 60) goTo(currentPage + (diff > 0 ? 1 : -1));
+});
+</script>
+</body>
+</html>
