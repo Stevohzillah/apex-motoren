@@ -1,4 +1,3 @@
-
 function loadPayPalSDK(callback) {
   if (window.paypal) { callback(); return; }
   const script = document.createElement('script');
@@ -42,14 +41,43 @@ function submitForm(e) {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
   btn.textContent = 'Sending...'; btn.disabled = true;
-  setTimeout(() => {
+
+  const data = {
+    name: document.getElementById('fullname').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    country: document.getElementById('country').value,
+    vin: document.getElementById('vin').value,
+    vehicle: document.getElementById('vehicle').value,
+    parts: document.getElementById('parts').value,
+    categories: document.getElementById('selectedCats').value
+  };
+
+  // ── CHANGE THIS TO YOUR RENDER BACKEND URL ──
+  const BACKEND_URL = 'https://your-render-app.onrender.com';
+
+  fetch(BACKEND_URL + '/submit-request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
     btn.textContent = 'Submit Request'; btn.disabled = false;
-    e.target.reset();
-    selectedCategories.clear();
-    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
-    document.getElementById('selectedCatsDisplay').textContent = 'No category selected';
-    showToast('Request received! We will send your quote and payment details within 48 hours.');
-  }, 1500);
+    if (res.success) {
+      e.target.reset();
+      selectedCategories.clear();
+      document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('selectedCatsDisplay').textContent = 'No category selected';
+      showToast('Request received! Ref: ' + res.reference + '. We will contact you within 48 hours.');
+    } else {
+      showToast('Error: ' + res.message);
+    }
+  })
+  .catch(() => {
+    btn.textContent = 'Submit Request'; btn.disabled = false;
+    showToast('Could not send request. Please WhatsApp us directly on +971 52 118 9377');
+  });
 }
 
 function updateInvoice() {
