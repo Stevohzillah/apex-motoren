@@ -37,6 +37,8 @@ function toggleCat(card, name) {
   document.getElementById('selectedCats').value = Array.from(selectedCategories).join(', ');
 }
 
+const BACKEND_URL = 'https://apex-backend-kzfd.onrender.com';
+
 function submitForm(e) {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
@@ -52,9 +54,6 @@ function submitForm(e) {
     parts: document.getElementById('parts').value,
     categories: document.getElementById('selectedCats').value
   };
-
-  // ── CHANGE THIS TO YOUR RENDER BACKEND URL ──
-  const BACKEND_URL = 'https://apex-backend-kzfd.onrender.com';
 
   fetch(BACKEND_URL + '/submit-request', {
     method: 'POST',
@@ -119,18 +118,39 @@ function switchTab(tab) {
 function sendSTK() {
   const phone = document.getElementById('stk-phone').value.trim();
   const amount = parseFloat(document.getElementById('inv-amount').value);
+  const ref = document.getElementById('inv-ref').value.trim() || 'APEX-TEST';
+  const desc = document.getElementById('inv-parts').value.trim() || 'Spare Parts';
+
   if (!phone) { showToast('Please enter your Safaricom phone number.'); return; }
   if (!amount || amount <= 0) { showToast('Please fill in the invoice amount first.'); return; }
+
   const btn = document.getElementById('stk-btn');
   const status = document.getElementById('stk-status');
   btn.textContent = 'Sending...'; btn.disabled = true;
   status.className = 'stk-status pending show';
   status.textContent = 'Sending M-Pesa prompt to ' + phone + '...';
-  setTimeout(() => {
+
+  fetch(BACKEND_URL + '/stk-push', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone, amount, reference: ref, description: desc })
+  })
+  .then(r => r.json())
+  .then(res => {
     btn.textContent = 'Send Prompt'; btn.disabled = false;
-    status.className = 'stk-status pending show';
-    status.innerHTML = 'Prompt sent to <strong style="color:var(--white)">' + phone + '</strong>. Enter PIN on your phone, then paste confirmation code below.';
-  }, 2000);
+    if (res.success) {
+      status.className = 'stk-status pending show';
+      status.innerHTML = '📲 Prompt sent! Enter your M-Pesa PIN on your phone, then paste the confirmation code below.';
+    } else {
+      status.className = 'stk-status error show';
+      status.textContent = 'Error: ' + res.message;
+    }
+  })
+  .catch(() => {
+    btn.textContent = 'Send Prompt'; btn.disabled = false;
+    status.className = 'stk-status error show';
+    status.textContent = 'Could not connect. Please try Paybill instead.';
+  });
 }
 
 function formatCard(el) {
