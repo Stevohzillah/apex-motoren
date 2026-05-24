@@ -365,6 +365,7 @@ input, select, textarea { font-size:1rem; }
     <li><button onclick="goTo(4)" id="nav-4">Why Us</button></li>
     <li><button onclick="goTo(5)" id="nav-5">Contact</button></li>
     <li><button onclick="goTo(6)" id="nav-6">Pay Invoice</button></li>
+    <li><button onclick="goTo(7)" id="nav-7">Terms</button></li>
   </ul>
   <div class="nav-cta">
     <a href="https://wa.me/971521189377" class="btn-whatsapp" target="_blank">
@@ -386,6 +387,7 @@ input, select, textarea { font-size:1rem; }
   <button class="page-dot" onclick="goTo(4)"></button>
   <button class="page-dot" onclick="goTo(5)"></button>
   <button class="page-dot" onclick="goTo(6)"></button>
+  <button class="page-dot" onclick="goTo(7)"></button>
 </div>
 
 <div class="pages-wrapper">
@@ -518,6 +520,12 @@ input, select, textarea { font-size:1rem; }
                 <textarea id="parts" placeholder="Describe the parts you need..." required></textarea>
               </div>
               <input type="hidden" id="selectedCats">
+              <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-top:1rem;padding:0.85rem;background:rgba(184,149,42,0.05);border:1px solid rgba(184,149,42,0.2)">
+                <input type="checkbox" id="tc-agree" style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--gold)">
+                <label for="tc-agree" style="font-size:0.88rem;color:var(--light);cursor:pointer;line-height:1.6">
+                  I agree to the <button type="button" onclick="goTo(7)" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:0.88rem;text-decoration:underline;padding:0">Terms &amp; Conditions</button> of Apex Motoren Kenya. I understand that orders are confirmed only after full payment is received.
+                </label>
+              </div>
               <div class="form-submit">
                 <p class="form-note">Response within 48 hrs. We'll send M-Pesa payment details.</p>
                 <button type="submit" class="btn-primary">Submit Request →</button>
@@ -609,7 +617,7 @@ input, select, textarea { font-size:1rem; }
           <div class="track-status" id="trackStatus"></div>
         </div>
         <div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:2rem;padding-top:1.5rem">
-          <p style="font-family:var(--font-label);font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--light)">© 2026 Apex Motoren Kenya · Dubai · Germany · UK · Japan → East Africa</p>
+          <p style="font-family:var(--font-label);font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--light)">© 2026 Apex Motoren Kenya · Dubai · Germany · UK · Japan → East Africa · <button onclick="goTo(7)" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:0.82rem;text-decoration:underline;letter-spacing:0.15em;text-transform:uppercase">Terms &amp; Conditions</button></p>
         </div>
       </div>
     </div>
@@ -742,7 +750,7 @@ input, select, textarea { font-size:1rem; }
                   </div>
                 </div>
                 <div class="stk-status" id="stk-status"></div>
-                <div class="stk-api-note"><strong style="color:var(--light);font-size:0.75rem">⚙ Dev:</strong> Connect to <a href="https://developer.safaricom.co.ke" target="_blank">Daraja API</a> stkpush endpoint to activate.</div>
+                <div class="stk-api-note">Need help? WhatsApp us on <a href="https://wa.me/971521189377" style="color:var(--gold)">+971 52 118 9377</a></div>
                 <div class="confirm-slip" style="margin-top:1.2rem">
                   <div class="confirm-slip-title">Enter Confirmation Code</div>
                   <div class="slip-row">
@@ -818,6 +826,94 @@ input, select, textarea { font-size:1rem; }
     </div>
   </div>
 
+  <!-- PAGE 8: TERMS & CONDITIONS -->
+  <div class="page" id="page-7">
+    <div style="min-height:calc(100vh - 72px);padding:4rem 5rem;background:var(--dark);overflow-y:auto">
+      <div style="max-width:800px;margin:0 auto">
+
+        <div style="text-align:center;margin-bottom:3rem">
+          <div class="section-eyebrow">Legal</div>
+          <h2 class="section-title">Terms &amp; <em>Conditions</em></h2>
+          <p style="font-size:0.85rem;color:var(--muted);margin-top:1rem">Last updated: May 2026 · Apex Motoren Kenya</p>
+        </div>
+
+        <!-- T&C Content -->
+        <div style="display:flex;flex-direction:column;gap:2rem">
+
+          <!-- 1 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">1. About Apex Motoren Kenya</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">Apex Motoren Kenya is an international spare parts sourcing and brokerage business. We source OEM and premium aftermarket parts for luxury vehicles from Dubai, Germany, United Kingdom, and Japan, and deliver to Kenya, Uganda, and Tanzania. We operate on a pre-order brokerage model — we do not hold inventory.</p>
+          </div>
+
+          <!-- 2 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">2. Orders & Payment</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem">All orders are confirmed only after <strong style="color:var(--white)">full payment is received</strong>. We do not begin sourcing any part until payment is confirmed via M-Pesa, PayPal, or card.</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem">A valid <strong style="color:var(--white)">M-Pesa confirmation code</strong>, PayPal transaction ID, or card receipt must be provided as proof of payment.</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">Prices quoted are valid for <strong style="color:var(--white)">48 hours</strong> from the time of quotation. After 48 hours, prices may change due to exchange rate fluctuations.</p>
+          </div>
+
+          <!-- 3 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">3. Delivery & Timelines</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem">Delivery timelines are <strong style="color:var(--white)">estimates only</strong> and may vary depending on supplier availability, customs clearance, and shipping conditions. Apex Motoren Kenya is not liable for delays caused by customs authorities, shipping carriers, or suppliers.</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">Standard delivery timeline is <strong style="color:var(--white)">7–21 business days</strong> from order confirmation, depending on the sourcing hub and destination country.</p>
+          </div>
+
+          <!-- 4 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">4. Refund Policy</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem"><strong style="color:var(--white)">Full refund:</strong> If we are unable to source your requested part, you will receive a full refund within 5 business days.</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem"><strong style="color:var(--white)">No refund:</strong> Once a part has been sourced and shipped, we cannot accept returns unless the part is proven to be wrong due to our error (incorrect VIN matching).</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8"><strong style="color:var(--white)">Partial refund:</strong> If you provided incorrect vehicle information and we sourced accordingly, a restocking and handling fee of 20% applies.</p>
+          </div>
+
+          <!-- 5 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">5. VIN Accuracy</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">The customer is responsible for providing the correct Vehicle Identification Number (VIN). Apex Motoren Kenya uses the VIN provided to source parts. If an incorrect VIN results in a wrong part being sourced, the customer bears responsibility for additional costs incurred.</p>
+          </div>
+
+          <!-- 6 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">6. Warranty</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem">All genuine OEM parts carry the <strong style="color:var(--white)">manufacturer's warranty</strong>. Premium aftermarket parts carry the supplier's warranty where applicable.</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">Warranty claims must be submitted within <strong style="color:var(--white)">7 days</strong> of receiving the part, with photo or video evidence of the defect.</p>
+          </div>
+
+          <!-- 7 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">7. Privacy & Data</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">We collect your name, phone number, email, and vehicle details solely for the purpose of fulfilling your parts request. We do not sell or share your information with third parties. Your payment details are processed securely by M-Pesa (Safaricom), PayPal, or card processors and are never stored on our servers.</p>
+          </div>
+
+          <!-- 8 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">8. Limitation of Liability</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8">Apex Motoren Kenya acts as a broker and is not the manufacturer or original seller of the parts. Our liability is limited to the value of the order placed. We are not liable for any vehicle damage, loss of income, or consequential damages arising from the use of parts sourced through us.</p>
+          </div>
+
+          <!-- 9 -->
+          <div style="background:var(--dark2);border:1px solid rgba(184,149,42,0.15);padding:2rem">
+            <h3 style="font-family:var(--font-label);font-size:0.85rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">9. Contact & Disputes</h3>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-bottom:1rem">For any disputes or complaints, contact us first via:</p>
+            <p style="font-size:0.95rem;color:var(--gold);line-height:1.8">📱 WhatsApp: +971 52 118 9377</p>
+            <p style="font-size:0.95rem;color:var(--gold);line-height:1.8">📧 Email: apexmotor@apexmotoren.com</p>
+            <p style="font-size:0.95rem;color:var(--light);line-height:1.8;margin-top:1rem">We aim to resolve all disputes within <strong style="color:var(--white)">5 business days</strong>. These terms are governed by the laws of Kenya.</p>
+          </div>
+
+          <!-- Agreement -->
+          <div style="background:rgba(184,149,42,0.08);border:1px solid rgba(184,149,42,0.3);padding:2rem;text-align:center">
+            <p style="font-size:1rem;color:var(--white);line-height:1.8">By submitting a parts request or making a payment on this website, you agree to these Terms &amp; Conditions.</p>
+            <button class="btn-primary" style="margin-top:1.5rem" onclick="goTo(2)">Request Parts →</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- end pages-wrapper -->
 
 <div class="toast" id="toast"></div>
@@ -834,7 +930,7 @@ function loadPayPalSDK(callback) {
 }
 
 let currentPage = 0;
-const totalPages = 7;
+const totalPages = 8;
 const selectedCategories = new Set();
 let paypalReady = false;
 
@@ -868,6 +964,14 @@ const BACKEND_URL = 'https://apex-backend-kzfd.onrender.com';
 function submitForm(e) {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
+
+  // Check T&C agreement
+  const tcCheck = document.getElementById('tc-agree');
+  if (tcCheck && !tcCheck.checked) {
+    showToast('Please agree to our Terms & Conditions before submitting.');
+    return;
+  }
+
   btn.textContent = 'Sending...'; btn.disabled = true;
 
   const data = {
