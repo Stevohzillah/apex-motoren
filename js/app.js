@@ -1,266 +1,442 @@
-function loadPayPalSDK(callback) {
-  if (window.paypal) { callback(); return; }
-  const script = document.createElement('script');
-  script.src = 'https://www.paypal.com/sdk/js?client-id=sb&currency=USD';
-  script.onload = callback;
-  script.onerror = function() { showToast('PayPal could not load. Check your connection.'); };
-  document.head.appendChild(script);
+// ─────────────────────────────────────────────
+//  APEX MOTOREN KENYA — Full Backend Server
+//  Features:
+//    ✓ Parts request form → Email + WhatsApp alert
+//    ✓ M-Pesa STK Push
+//    ✓ M-Pesa Callback
+//    ✓ M-Pesa Status Query
+//  Stack: Node.js + Express
+//  Deploy: Render.com (free tier)
+// ─────────────────────────────────────────────
+
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+const nodemailerPkg = require('nodemailer');
+const nodemailer = nodemailerPkg.default || nodemailerPkg;
+require('dotenv').config();
+
+const app = express();
+app.use(express.json());
+app.use(cors({
+  origin: ['https://apexmotoren.com', 'https://www.apexmotoren.com', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
+
+const {
+  // M-Pesa
+  CONSUMER_KEY,
+  CONSUMER_SECRET,
+  SHORTCODE,
+  PASSKEY,
+  CALLBACK_URL,
+  NODE_ENV = 'sandbox',
+
+  // Email (SMTP)
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASS,
+  NOTIFY_EMAIL = 'apexmotor@apexmotoren.com',
+
+  // WhatsApp via CallMeBot (free — no Twilio needed)
+  // Sign up at callmebot.com to get your API key
+  WHATSAPP_PHONE,   // your WhatsApp number e.g. 971521189377
+  WHATSAPP_API_KEY, // from callmebot.com
+
+  PORT = 3000
+} = process.env;
+
+const BASE_URL = NODE_ENV === 'production'
+  ? 'https://api.safaricom.co.ke'
+  : 'https://sandbox.safaricom.co.ke';
+
+
+// ─────────────────────────────────────────────
+//  HELPER: Send Email Notification
+// ─────────────────────────────────────────────
+async function sendEmail(subject, html) {
+  try {
+    const transporter = nodemailer.createTransporter({
+      host: SMTP_HOST,
+      port: parseInt(SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"Apex Motoren Kenya" <${SMTP_USER}>`,
+      to: NOTIFY_EMAIL,
+      subject,
+      html
+    });
+
+    console.log('✅ Email sent:', subject);
+  } catch (err) {
+    console.error('❌ Email error:', err.message);
+  }
 }
 
-let currentPage = 0;
-const totalPages = 7;
-const selectedCategories = new Set();
-let paypalReady = false;
 
-function goTo(index) {
-  if (index < 0 || index >= totalPages) return;
-  const prev = document.getElementById('page-' + currentPage);
-  prev.classList.add('exit-left');
-  prev.classList.remove('active');
-  setTimeout(() => prev.classList.remove('exit-left'), 400);
-  currentPage = index;
-  const next = document.getElementById('page-' + currentPage);
-  next.classList.add('active');
-  next.scrollTop = 0;
-  document.querySelectorAll('.nav-links button').forEach((btn, i) => btn.classList.toggle('active', i === currentPage));
-  document.querySelectorAll('.page-dot').forEach((dot, i) => dot.classList.toggle('active', i === currentPage));
-  document.getElementById('arrow-prev').classList.toggle('hidden', currentPage === 0);
-  document.getElementById('arrow-next').classList.toggle('hidden', currentPage === totalPages - 1);
-  if (currentPage === 6 && !paypalReady) initPayPal();
-}
-
-function toggleCat(card, name) {
-  card.classList.toggle('selected');
-  selectedCategories.has(name) ? selectedCategories.delete(name) : selectedCategories.add(name);
-  const d = document.getElementById('selectedCatsDisplay');
-  d.textContent = selectedCategories.size === 0 ? 'No category selected' : 'Selected: ' + Array.from(selectedCategories).join(', ');
-  document.getElementById('selectedCats').value = Array.from(selectedCategories).join(', ');
-}
-
-const BACKEND_URL = 'https://apex-backend-kzfd.onrender.com';
-
-function submitForm(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.textContent = 'Sending...'; btn.disabled = true;
-
-  const data = {
-    name: document.getElementById('fullname').value,
-    phone: document.getElementById('phone').value,
-    email: document.getElementById('email').value,
-    country: document.getElementById('country').value,
-    vin: document.getElementById('vin').value,
-    vehicle: document.getElementById('vehicle').value,
-    parts: document.getElementById('parts').value,
-    categories: document.getElementById('selectedCats').value
-  };
-
-  fetch(BACKEND_URL + '/submit-request', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(r => r.json())
-  .then(res => {
-    btn.textContent = 'Submit Request'; btn.disabled = false;
-    if (res.success) {
-      e.target.reset();
-      selectedCategories.clear();
-      document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
-      document.getElementById('selectedCatsDisplay').textContent = 'No category selected';
-      showToast('Request received! Ref: ' + res.reference + '. We will contact you within 48 hours.');
-    } else {
-      showToast('Error: ' + res.message);
+// ─────────────────────────────────────────────
+//  HELPER: Send WhatsApp Notification (CallMeBot)
+//  Free service — no Twilio account needed
+//  Setup: wa.me/34644597958?text=I allow callmebot to send me messages
+//  Then get your API key from callmebot.com
+// ─────────────────────────────────────────────
+async function sendWhatsApp(message) {
+  try {
+    if (!WHATSAPP_PHONE || !WHATSAPP_API_KEY) {
+      console.log('WhatsApp not configured — skipping');
+      return;
     }
-  })
-  .catch(() => {
-    btn.textContent = 'Submit Request'; btn.disabled = false;
-    showToast('Could not send request. Please WhatsApp us directly on +971 52 118 9377');
+
+    const encoded = encodeURIComponent(message);
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${WHATSAPP_PHONE}&text=${encoded}&apikey=${WHATSAPP_API_KEY}`;
+    await axios.get(url);
+    console.log('✅ WhatsApp sent');
+  } catch (err) {
+    console.error('❌ WhatsApp error:', err.message);
+  }
+}
+
+
+// ─────────────────────────────────────────────
+//  HELPER: Format parts request as HTML email
+// ─────────────────────────────────────────────
+function buildEmailHTML(data) {
+  const { name, phone, email, country, vin, vehicle, parts, categories } = data;
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#f9f7f2;padding:2rem;border-radius:8px">
+      <div style="border-bottom:2px solid #B8952A;padding-bottom:1rem;margin-bottom:1.5rem">
+        <h1 style="color:#B8952A;margin:0;font-size:1.5rem">APEX MOTOREN KENYA</h1>
+        <p style="color:#888;margin:0.25rem 0 0;font-size:0.85rem">NEW PARTS REQUEST</p>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse">
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;width:35%;font-size:0.85rem">CUSTOMER NAME</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#f9f7f2;font-weight:bold">${name || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;font-size:0.85rem">WHATSAPP / PHONE</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#f9f7f2">${phone || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;font-size:0.85rem">EMAIL</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#f9f7f2">${email || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;font-size:0.85rem">COUNTRY</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#f9f7f2">${country || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;font-size:0.85rem">VIN NUMBER</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#B8952A;font-family:monospace;font-size:1rem;letter-spacing:0.1em">${vin || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;font-size:0.85rem">VEHICLE</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#f9f7f2">${vehicle || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#888;font-size:0.85rem">CATEGORY</td>
+          <td style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;color:#B8952A">${categories || '—'}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0;color:#888;font-size:0.85rem;vertical-align:top;padding-top:1rem">PARTS NEEDED</td>
+          <td style="padding:0.6rem 0;color:#f9f7f2;padding-top:1rem">${parts || '—'}</td>
+        </tr>
+      </table>
+
+      <div style="margin-top:2rem;padding:1rem;background:#1a1a1a;border-left:3px solid #B8952A">
+        <p style="margin:0;color:#888;font-size:0.8rem">Submitted: ${new Date().toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' })} EAT</p>
+        <p style="margin:0.25rem 0 0;color:#888;font-size:0.8rem">Reply to: <a href="mailto:${email}" style="color:#B8952A">${email || 'No email provided'}</a></p>
+      </div>
+
+      <div style="margin-top:1.5rem;text-align:center">
+        <a href="https://wa.me/${(phone || '').replace(/\D/g,'')}" style="background:#25D366;color:#000;padding:0.75rem 1.5rem;text-decoration:none;font-weight:bold;border-radius:4px;display:inline-block">
+          💬 Reply on WhatsApp
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+
+// ─────────────────────────────────────────────
+//  ROUTE 1: Health Check
+// ─────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'Apex Motoren Kenya Backend',
+    environment: NODE_ENV,
+    version: '2.0.0'
   });
-}
-
-function updateInvoice() {
-  const ref = document.getElementById('inv-ref').value || '—';
-  const name = document.getElementById('inv-name').value || '—';
-  const parts = document.getElementById('inv-parts').value || '—';
-  const amount = parseFloat(document.getElementById('inv-amount').value) || 0;
-  const currency = document.getElementById('inv-currency').value || 'KES';
-  document.getElementById('disp-ref').textContent = ref;
-  document.getElementById('disp-name').textContent = name;
-  document.getElementById('disp-parts').textContent = parts;
-  document.getElementById('disp-currency').textContent = currency;
-  document.getElementById('disp-amount').textContent = currency + ' ' + amount.toLocaleString('en-KE', {minimumFractionDigits:2, maximumFractionDigits:2});
-  const acct = document.getElementById('paybill-account');
-  const stepAcct = document.getElementById('step-account');
-  const stepAmt = document.getElementById('step-amount');
-  if (acct) acct.textContent = ref === '—' ? 'APX-REF' : ref;
-  if (stepAcct) stepAcct.textContent = ref === '—' ? 'your reference number' : ref;
-  if (stepAmt) stepAmt.textContent = amount > 0 ? (currency + ' ' + amount.toLocaleString()) : 'as per invoice';
-}
-
-function switchMethod(method) {
-  document.querySelectorAll('.method-tab').forEach((t, i) => {
-    t.classList.toggle('active', ['mpesa','card','paypal'][i] === method);
-  });
-  document.querySelectorAll('.method-pane').forEach(p => p.classList.remove('active'));
-  document.getElementById('method-' + method).classList.add('active');
-  if (method === 'paypal' && !paypalReady) initPayPal();
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.mpesa-tab').forEach((t, i) => {
-    t.classList.toggle('active', (i === 0 && tab === 'paybill') || (i === 1 && tab === 'stk'));
-  });
-  document.getElementById('pane-paybill').classList.toggle('active', tab === 'paybill');
-  document.getElementById('pane-stk').classList.toggle('active', tab === 'stk');
-}
-
-function sendSTK() {
-  const phone = document.getElementById('stk-phone').value.trim();
-  const amount = parseFloat(document.getElementById('inv-amount').value);
-  const ref = document.getElementById('inv-ref').value.trim() || 'APEX-TEST';
-  const desc = document.getElementById('inv-parts').value.trim() || 'Spare Parts';
-
-  if (!phone) { showToast('Please enter your Safaricom phone number.'); return; }
-  if (!amount || amount <= 0) { showToast('Please fill in the invoice amount first.'); return; }
-
-  const btn = document.getElementById('stk-btn');
-  const status = document.getElementById('stk-status');
-  btn.textContent = 'Sending...'; btn.disabled = true;
-  status.className = 'stk-status pending show';
-  status.textContent = 'Sending M-Pesa prompt to ' + phone + '...';
-
-  fetch(BACKEND_URL + '/stk-push', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone, amount, reference: ref, description: desc })
-  })
-  .then(r => r.json())
-  .then(res => {
-    btn.textContent = 'Send Prompt'; btn.disabled = false;
-    if (res.success) {
-      status.className = 'stk-status pending show';
-      status.innerHTML = '📲 Prompt sent! Enter your M-Pesa PIN on your phone, then paste the confirmation code below.';
-    } else {
-      status.className = 'stk-status error show';
-      status.textContent = 'Error: ' + res.message;
-    }
-  })
-  .catch(() => {
-    btn.textContent = 'Send Prompt'; btn.disabled = false;
-    status.className = 'stk-status error show';
-    status.textContent = 'Could not connect. Please try Paybill instead.';
-  });
-}
-
-function formatCard(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,16);
-  el.value = v.replace(/(.{4})/g,'$1 ').trim();
-}
-
-function formatExpiry(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,4);
-  if (v.length >= 3) v = v.substring(0,2) + ' / ' + v.substring(2);
-  el.value = v;
-}
-
-function processCard() {
-  const name = document.getElementById('card-name').value.trim();
-  const num = document.getElementById('card-number').value.replace(/\s/g,'');
-  const exp = document.getElementById('card-expiry').value;
-  const cvv = document.getElementById('card-cvv').value;
-  const amount = parseFloat(document.getElementById('inv-amount').value);
-  if (!name) { showToast('Please enter the cardholder name.'); return; }
-  if (num.length < 13) { showToast('Please enter a valid card number.'); return; }
-  if (!exp || exp.length < 4) { showToast('Please enter expiry date.'); return; }
-  if (!cvv || cvv.length < 3) { showToast('Please enter CVV.'); return; }
-  if (!amount || amount <= 0) { showToast('Please fill in the invoice amount first.'); return; }
-  const btn = event.target;
-  btn.textContent = 'Processing...'; btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = 'Pay Now'; btn.disabled = false;
-    showSuccess('Visa/Card', 'TXN-' + Math.random().toString(36).substr(2,8).toUpperCase());
-  }, 2000);
-}
-
-function initPayPal() {
-  paypalReady = true;
-  loadPayPalSDK(function() {
-    paypal.Buttons({
-      style: { layout:'vertical', color:'gold', shape:'rect', label:'pay', height:45 },
-      createOrder: function(data, actions) {
-        const amount = parseFloat(document.getElementById('inv-amount').value);
-        if (!amount || amount <= 0) { showToast('Please enter invoice amount first.'); return Promise.reject(); }
-        const ref = document.getElementById('inv-ref').value || 'APEX-ORDER';
-        const desc = document.getElementById('inv-parts').value || 'Spare Parts';
-        return actions.order.create({
-          purchase_units: [{ description: desc + ' — ' + ref, amount: { value: amount.toFixed(2), currency_code: 'USD' } }],
-          application_context: { brand_name: 'Apex Motoren Kenya', shipping_preference: 'NO_SHIPPING' }
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          showSuccess('PayPal', details.id || data.orderID);
-        });
-      },
-      onError: function() { showToast('PayPal error. Please try again or use another method.'); },
-      onCancel: function() { showToast('Payment cancelled. You can try again anytime.'); }
-    }).render('#paypal-button-container');
-  });
-}
-
-function confirmPayment(inputId, method) {
-  const code = document.getElementById(inputId).value.trim().toUpperCase();
-  if (!code || code.length < 6) { showToast('Please enter a valid confirmation code.'); return; }
-  showSuccess(method || 'M-Pesa', code);
-}
-
-function showSuccess(method, ref) {
-  const badge = document.getElementById('inv-status');
-  badge.textContent = 'Paid';
-  badge.style.cssText = 'background:rgba(37,211,102,0.1);border-color:rgba(37,211,102,0.4);color:#25D366;font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.3rem 0.7rem';
-  const tabs = document.getElementById('method-tabs');
-  if (tabs) tabs.style.display = 'none';
-  document.querySelectorAll('.method-pane').forEach(p => p.classList.remove('active'));
-  document.getElementById('paymentSuccess').classList.add('show');
-  const msg = document.getElementById('success-msg');
-  if (msg) msg.textContent = 'Your ' + method + ' payment has been received (ref: ' + ref + '). We will begin processing your order and contact you within 24 hours via WhatsApp.';
-  showToast('Payment confirmed via ' + method + '! Ref: ' + ref);
-}
-
-function generateTrackHTML(ref) {
-  const steps = [
-    { label: 'Request Received', detail: 'Assigned reference ' + ref, state: 'done' },
-    { label: 'Sourcing in Progress', detail: 'Locating your part from global suppliers', state: 'done' },
-    { label: 'Part Located & Quoted', detail: 'Part found — awaiting your confirmation', state: 'active' },
-    { label: 'In Transit', detail: 'Shipment dispatched from source hub', state: '' },
-    { label: 'Customs Clearance', detail: 'Processing through East African customs', state: '' },
-    { label: 'Out for Delivery', detail: 'Final delivery to your address', state: '' },
-  ];
-  return steps.map((s, i) => '<div class="track-step"><div><div class="track-dot ' + s.state + '"></div>' + (i < steps.length - 1 ? '<div class="track-line"></div>' : '') + '</div><div><div style="font-weight:500;color:' + (s.state ? 'var(--white)' : 'var(--mid)') + ';font-size:0.88rem">' + s.label + '</div><div style="font-size:0.8rem;color:var(--muted)">' + s.detail + '</div></div></div>').join('');
-}
-
-function trackOrder() {
-  const val = document.getElementById('track-input').value.trim();
-  if (!val) { showToast('Please enter your order reference number.'); return; }
-  document.getElementById('trackStatus').innerHTML = generateTrackHTML(val);
-  document.getElementById('trackResult').classList.add('show');
-}
-
-function showToast(msg, duration=5000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') goTo(currentPage + 1);
-  if (e.key === 'ArrowLeft') goTo(currentPage - 1);
 });
 
-let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
-document.addEventListener('touchend', e => {
-  const diff = touchStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 60) goTo(currentPage + (diff > 0 ? 1 : -1));
+
+// ─────────────────────────────────────────────
+//  ROUTE 2: Parts Request Form Submission
+//  POST /submit-request
+//  Body: { name, phone, email, country, vin, vehicle, parts, categories }
+// ─────────────────────────────────────────────
+app.post('/submit-request', async (req, res) => {
+  try {
+    const { name, phone, email, country, vin, vehicle, parts, categories } = req.body;
+
+    // Validate required fields
+    if (!name || !phone || !parts) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, phone and parts description are required'
+      });
+    }
+
+    console.log('📥 New parts request from:', name, phone);
+
+    // Build WhatsApp message
+    const whatsappMsg = `
+🚗 NEW PARTS REQUEST — APEX MOTOREN KENYA
+
+👤 Name: ${name}
+📞 Phone: ${phone}
+📧 Email: ${email || 'Not provided'}
+🌍 Country: ${country || 'Not specified'}
+🔑 VIN: ${vin || 'Not provided'}
+🚙 Vehicle: ${vehicle || 'Not specified'}
+📦 Category: ${categories || 'Not selected'}
+
+🔧 Parts Needed:
+${parts}
+
+⏰ ${new Date().toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' })} EAT
+    `.trim();
+
+    // Send both notifications simultaneously
+    await Promise.all([
+      sendEmail(
+        `🚗 New Parts Request — ${name} (${country || 'Unknown'})`,
+        buildEmailHTML(req.body)
+      ),
+      sendWhatsApp(whatsappMsg)
+    ]);
+
+    // Send confirmation back to website
+    return res.json({
+      success: true,
+      message: 'Request received! We will contact you within 48 hours.',
+      reference: 'APX-' + Date.now().toString().slice(-6)
+    });
+
+  } catch (error) {
+    console.error('Submit error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error. Please try again or contact us on WhatsApp.'
+    });
+  }
+});
+
+
+// ─────────────────────────────────────────────
+//  ROUTE 3: M-Pesa OAuth Token
+// ─────────────────────────────────────────────
+async function getAccessToken() {
+  const credentials = Buffer.from(`${CONSUMER_KEY}:${CONSUMER_SECRET}`).toString('base64');
+  const response = await axios.get(`${BASE_URL}/oauth/v1/generate?grant_type=client_credentials`, {
+    headers: { Authorization: `Basic ${credentials}` }
+  });
+  return response.data.access_token;
+}
+
+function getTimestamp() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+}
+
+function getPassword(timestamp) {
+  return Buffer.from(`${SHORTCODE}${PASSKEY}${timestamp}`).toString('base64');
+}
+
+
+// ─────────────────────────────────────────────
+//  ROUTE 4: STK Push
+//  POST /stk-push
+//  Body: { phone, amount, reference, description }
+// ─────────────────────────────────────────────
+app.post('/stk-push', async (req, res) => {
+  try {
+    const { phone, amount, reference, description } = req.body;
+
+    if (!phone || !amount || !reference) {
+      return res.status(400).json({ success: false, message: 'phone, amount and reference are required' });
+    }
+
+    const formattedPhone = phone.replace(/\s/g,'').replace(/^\+/,'').replace(/^0/,'254');
+
+    if (!/^2547\d{8}$/.test(formattedPhone)) {
+      return res.status(400).json({ success: false, message: 'Invalid Safaricom number. Use format 07XX XXX XXX' });
+    }
+
+    const parsedAmount = Math.ceil(parseFloat(amount));
+    if (isNaN(parsedAmount) || parsedAmount < 1) {
+      return res.status(400).json({ success: false, message: 'Amount must be at least KES 1' });
+    }
+
+    const token = await getAccessToken();
+    const timestamp = getTimestamp();
+    const password = getPassword(timestamp);
+
+    const response = await axios.post(
+      `${BASE_URL}/mpesa/stkpush/v1/processrequest`,
+      {
+        BusinessShortCode: SHORTCODE,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: 'CustomerPayBillOnline',
+        Amount: parsedAmount,
+        PartyA: formattedPhone,
+        PartyB: SHORTCODE,
+        PhoneNumber: formattedPhone,
+        CallBackURL: CALLBACK_URL,
+        AccountReference: reference.substring(0, 12),
+        TransactionDesc: (description || 'Apex Motoren Parts').substring(0, 13)
+      },
+      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+    );
+
+    const data = response.data;
+
+    if (data.ResponseCode === '0') {
+      return res.json({
+        success: true,
+        message: 'Payment prompt sent. Ask customer to check their phone.',
+        checkoutRequestId: data.CheckoutRequestID,
+        merchantRequestId: data.MerchantRequestID
+      });
+    } else {
+      return res.status(400).json({ success: false, message: data.ResponseDescription || 'STK push failed' });
+    }
+
+  } catch (error) {
+    const errData = error?.response?.data;
+    const errMsg = error?.message;
+    console.error('❌ STK Push error:', JSON.stringify(errData || errMsg));
+    console.error('❌ CONSUMER_KEY set:', !!CONSUMER_KEY);
+    console.error('❌ CONSUMER_SECRET set:', !!CONSUMER_SECRET);
+    console.error('❌ SHORTCODE:', SHORTCODE);
+    console.error('❌ NODE_ENV:', NODE_ENV);
+    console.error('❌ BASE_URL:', BASE_URL);
+    return res.status(500).json({ 
+      success: false, 
+      message: errData?.errorMessage || errData?.ResponseDescription || errMsg || 'Server error. Please try again.'
+    });
+  }
+});
+
+
+// ─────────────────────────────────────────────
+//  ROUTE 5: M-Pesa Payment Callback
+//  POST /callback
+// ─────────────────────────────────────────────
+app.post('/callback', async (req, res) => {
+  try {
+    const result = req.body?.Body?.stkCallback;
+    if (!result) return res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
+
+    const { ResultCode, ResultDesc, CallbackMetadata, CheckoutRequestID } = result;
+
+    if (ResultCode === 0) {
+      const items = CallbackMetadata?.Item || [];
+      const get = name => items.find(i => i.Name === name)?.Value;
+
+      const payment = {
+        checkoutRequestId: CheckoutRequestID,
+        amount: get('Amount'),
+        receiptNumber: get('MpesaReceiptNumber'),
+        phone: get('PhoneNumber'),
+        transactionDate: get('TransactionDate'),
+      };
+
+      console.log('✅ M-Pesa payment received:', payment);
+
+      // Notify you via WhatsApp + email
+      const msg = `💰 PAYMENT RECEIVED — APEX MOTOREN\n\nAmount: KES ${payment.amount}\nM-Pesa Code: ${payment.receiptNumber}\nPhone: ${payment.phone}\nRef: ${CheckoutRequestID}`;
+
+      await Promise.all([
+        sendWhatsApp(msg),
+        sendEmail(
+          `💰 Payment Received — KES ${payment.amount} (${payment.receiptNumber})`,
+          `<div style="font-family:Arial;padding:2rem;background:#0a0a0a;color:#f9f7f2">
+            <h2 style="color:#25D366">Payment Confirmed</h2>
+            <p><strong>Amount:</strong> KES ${payment.amount}</p>
+            <p><strong>M-Pesa Code:</strong> <span style="color:#B8952A;font-family:monospace">${payment.receiptNumber}</span></p>
+            <p><strong>Phone:</strong> ${payment.phone}</p>
+            <p><strong>Reference:</strong> ${CheckoutRequestID}</p>
+            <p><strong>Time:</strong> ${new Date().toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' })}</p>
+          </div>`
+        )
+      ]);
+    } else {
+      console.log('❌ Payment failed/cancelled:', ResultDesc);
+    }
+  } catch (err) {
+    console.error('Callback error:', err.message);
+  }
+
+  res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
+});
+
+
+// ─────────────────────────────────────────────
+//  ROUTE 6: M-Pesa Query Status
+//  POST /query
+// ─────────────────────────────────────────────
+app.post('/query', async (req, res) => {
+  try {
+    const { checkoutRequestId } = req.body;
+    if (!checkoutRequestId) return res.status(400).json({ success: false, message: 'checkoutRequestId required' });
+
+    const token = await getAccessToken();
+    const timestamp = getTimestamp();
+    const password = getPassword(timestamp);
+
+    const response = await axios.post(
+      `${BASE_URL}/mpesa/stkpushquery/v1/query`,
+      { BusinessShortCode: SHORTCODE, Password: password, Timestamp: timestamp, CheckoutRequestID: checkoutRequestId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const data = response.data;
+    res.json({ success: true, resultCode: data.ResultCode, resultDesc: data.ResultDesc, paid: data.ResultCode === '0' });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error?.response?.data || error.message });
+  }
+});
+
+
+// ─────────────────────────────────────────────
+//  START SERVER
+// ─────────────────────────────────────────────
+app.listen(PORT, () => {
+  console.log(`
+  ┌─────────────────────────────────────────┐
+  │  Apex Motoren Kenya Backend v2.0        │
+  │  Port: ${PORT}                              │
+  │  Mode: ${NODE_ENV}                    │
+  │                                         │
+  │  Routes:                                │
+  │  POST /submit-request  ← Form alerts    │
+  │  POST /stk-push        ← M-Pesa STK     │
+  │  POST /callback        ← M-Pesa result  │
+  │  POST /query           ← Check status   │
+  └─────────────────────────────────────────┘
+  `);
 });
