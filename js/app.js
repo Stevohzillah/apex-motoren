@@ -290,8 +290,10 @@ app.post('/stk-push', async (req, res) => {
     }
 
     const token = await getAccessToken();
+    console.log('✅ Got access token');
     const timestamp = getTimestamp();
     const password = getPassword(timestamp);
+    console.log('📤 STK Push - Phone:', formattedPhone, 'Amount:', parsedAmount, 'Ref:', reference, 'Shortcode:', SHORTCODE);
 
     const response = await axios.post(
       `${BASE_URL}/mpesa/stkpush/v1/processrequest`,
